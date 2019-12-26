@@ -1,0 +1,215 @@
+﻿@model PermisosAppData.EmpleadoViewModel
+@{
+    ViewBag.Title = "Empleados";
+
+
+}
+@using (Html.BeginForm())
+{
+    //INICIO AREA CAMPOS OCULTOS
+    @Html.HiddenFor(m => m.EventCommand)
+    @Html.HiddenFor(m => m.Mode)
+    @Html.HiddenFor(m => m.EventArgument)
+
+
+    //FIN AREA CAMPOS OCULTOS
+
+    //INICIO AREA LISTA
+
+    if (Model.IsListAreaVisible)
+    {
+
+
+
+        <div class="panel-body">
+            <div calss="table-responsive">
+
+                @Html.Label("Empleados")
+
+                <table class="table table-condensed table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Tipo de Permiso</th>
+                            <th>Fecha de Otorgado</th>
+
+
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model.Empleados)
+                        {
+                            <tr>
+
+                                <td>@item.Id</td>
+                                <td>@item.NombreEmpleado</td>
+                                <td>@item.ApellidoEmpleado</td>
+
+                                <td>@item.TipoPermiso.PermisoDescripcion</td>
+                                <td>@item.FechaPermiso</td>
+
+
+                            </tr>
+
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <button id="btnAdd"
+                    class="btn btn-sm btn-primary"
+                    data-pdsa-action="add">
+                <i class="glyphicon glyphicon-share-alt"></i>
+                &nbsp;Agregar
+            </button>
+        </div>
+
+        //FIN AREA LISTADO
+
+    }
+
+
+
+    //INICIO AREA DATOS EMPLEADO
+    if (Model.IsDetailAreaVisible)
+    {
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h1 class="panel-title">
+
+                    Datos del empleado
+                </h1>
+            </div>
+            <div class="panel-body">
+
+                @*INICIO AREA DE MENESAJES VALIDACION*@
+
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        @if (!Model.IsValid)
+                        {
+                            <div class="alert alert-danger alert-dismissable" role="alert">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span aria-hidden="true">
+                                        &times;
+                                    </span>
+                                    <span class="sr-only">Close</span>
+                                </button>
+
+                                @Html.ValidationSummary(false)
+
+                            </div>
+
+                        }
+                    </div>
+                </div>
+
+
+                @*FIN AREA DE MENESAJES VALIDACION*@
+
+
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Entity.NombreEmpleado, "Nombre")
+                    @Html.TextBoxFor(m => m.Entity.NombreEmpleado, new { @class = "form-control" })
+
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Entity.ApellidoEmpleado, "Apellido")
+                    @Html.TextBoxFor(m => m.Entity.ApellidoEmpleado, new { @class = "form-control" })
+
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Entity.TipoPermisoID, "Tipo de Permiso")
+                    @Html.DropDownListFor(m => m.Entity.TipoPermisoID,
+                    new SelectList(Model.Permisos, "Id", "PermisoDescripcion"),
+                    "Elija Permiso")
+
+
+
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Entity.FechaPermiso, "Fecha Otorgado")
+                    @Html.TextBoxFor(m => m.Entity.FechaPermiso, new { @class = "form-control datepicker", placeholder = "Ingrese la fecha aqui..." })
+
+                </div>
+
+
+
+
+
+            </div>
+
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <button id="btnSave"
+                                class="btn btn-sm btn-primary"
+                                data-pdsa-action="save">
+                            <i class="glyphicon glyphicon-floppy-disk"></i>
+                            &nbsp;Guardar
+                        </button>
+
+                        <button id="btnCancel"
+                                formnovalidate="formnovalidate"
+                                class="btn btn-sm btn-primary"
+                                data-pdsa-action="cancel">
+                            <i class="glyphicon glyphicon-remove-circle"></i>
+                            &nbsp;Volver
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+
+    }
+    //FIN AREA DATOS EMPELADO
+
+
+
+}
+@section scripts {
+    <!-- Bootstrap DatePicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css" type="text/css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js" type="text/javascript"></script>
+    <!-- Bootstrap DatePicker -->
+    <script>
+        $(document).ready(function () {
+            $(function () { // will trigger when the document is ready
+                $('.datepicker').datepicker(); //Initialise any date pickers
+            });
+
+            $("[data-pdsa-action]").on("click", function (e) {
+                e.preventDefault();
+
+                $("#EventCommand").val(
+                    $(this).data("pdsa-action"));
+
+                $("#EventArgument").val(
+                    $(this).data("pdsa-val"));
+
+
+
+                $("form").submit();
+            });
+        });
+    </script>
+
+}
+
